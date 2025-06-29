@@ -2,16 +2,20 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>幸運轉盤抽獎</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>🎯 幸運轉盤抽獎</h1>
-    <canvas id="wheel" width="400" height="400"></canvas>
+  <h1>🎯 幸運轉盤抽獎</h1>
+
+  <div class="wheel-wrapper">
     <div id="arrow"></div>
-    <button id="spin">開始抽獎</button>
+    <canvas id="wheel" width="400" height="400"></canvas>
   </div>
+
+  <button id="spin">開始抽獎</button>
+
   <script src="script.js"></script>
 </body>
 </html>
