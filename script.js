@@ -1,69 +1,74 @@
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
 
-const canvas = document.getElementById("wheel");
-const ctx = canvas.getContext("2d");
-const prizes = ["$100禮券", "謝謝參與", "免費飲料", "再轉一次", "精美小禮", "$50折扣", "神秘大獎", "沒中"];
-const colors = ["#f8b195", "#f67280", "#c06c84", "#6c5b7b", "#355c7d", "#99b898", "#feceab", "#ff847c"];
-const spinBtn = document.getElementById("spin");
-const resultText = document.getElementById("result");
-let startAngle = 0;
-let arc = Math.PI / (prizes.length / 2);
-let spinTimeout = null;
-let spinAngleStart = 0;
-let spinTime = 0;
-let spinTimeTotal = 0;
+const prizes = ['頭獎', '二獎', '三獎', '銘謝惠顧', '再接再厲', '小獎'];
+const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#66BB6A', '#BA68C8', '#FFA726'];
+const slices = prizes.length;
+const anglePerSlice = (2 * Math.PI) / slices;
+let rotation = 0;
+let spinning = false;
 
 function drawWheel() {
-    for (let i = 0; i < prizes.length; i++) {
-        let angle = startAngle + i * arc;
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.beginPath();
-        ctx.moveTo(250, 250);
-        ctx.arc(250, 250, 250, angle, angle + arc, false);
-        ctx.lineTo(250, 250);
-        ctx.fill();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < slices; i++) {
+    const startAngle = anglePerSlice * i + rotation;
+    const endAngle = anglePerSlice * (i + 1) + rotation;
 
-        ctx.save();
-        ctx.fillStyle = "white";
-        ctx.translate(250, 250);
-        ctx.rotate(angle + arc / 2);
-        ctx.textAlign = "right";
-        ctx.font = "16px Microsoft JhengHei";
-        ctx.fillText(prizes[i], 230, 10);
-        ctx.restore();
-    }
+    // 區塊
+    ctx.beginPath();
+    ctx.moveTo(250, 250);
+    ctx.arc(250, 250, 250, startAngle, endAngle);
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+    ctx.stroke();
+
+    // 文字
+    ctx.save();
+    ctx.translate(250, 250);
+    ctx.rotate(startAngle + anglePerSlice / 2);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#000';
+    ctx.font = '20px sans-serif';
+    ctx.fillText(prizes[i], 220, 10);
+    ctx.restore();
+  }
+
+  // 指針
+  ctx.beginPath();
+  ctx.moveTo(250, 0);
+  ctx.lineTo(240, 20);
+  ctx.lineTo(260, 20);
+  ctx.closePath();
+  ctx.fillStyle = '#000';
+  ctx.fill();
 }
 
-function rotateWheel() {
-    spinTime += 30;
-    if (spinTime >= spinTimeTotal) {
-        stopRotateWheel();
-        return;
+function spinWheel() {
+  if (spinning) return;
+  spinning = true;
+
+  let speed = Math.random() * 0.2 + 0.3;
+  const deceleration = 0.003;
+
+  const spin = () => {
+    if (speed <= 0) {
+      spinning = false;
+      const degrees = ((rotation % (2 * Math.PI)) * 180) / Math.PI;
+      const selectedIndex = Math.floor(((2 * Math.PI - rotation % (2 * Math.PI)) / anglePerSlice)) % slices;
+      setTimeout(() => {
+        alert(`🎉 恭喜你抽到：${prizes[selectedIndex]}！`);
+      }, 500);
+      return;
     }
-    let spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
-    startAngle += (spinAngle * Math.PI / 180);
+
+    rotation += speed;
+    speed -= deceleration;
     drawWheel();
-    spinTimeout = setTimeout(rotateWheel, 30);
+    requestAnimationFrame(spin);
+  };
+
+  spin();
 }
 
-function stopRotateWheel() {
-    clearTimeout(spinTimeout);
-    let degrees = startAngle * 180 / Math.PI + 90;
-    let arcd = arc * 180 / Math.PI;
-    let index = Math.floor((360 - (degrees % 360)) / arcd);
-    resultText.innerText = "🎉 恭喜你中獎：「" + prizes[index] + "」";
-}
-
-function easeOut(t, b, c, d) {
-    const ts = (t /= d) * t;
-    const tc = ts * t;
-    return b + c * (tc + -3 * ts + 3 * t);
-}
-
-spinBtn.addEventListener("click", () => {
-    spinAngleStart = Math.random() * 3000 + 2000;
-    spinTime = 0;
-    spinTimeTotal = 3000;
-    rotateWheel();
-});
-
+document.getElementById('spin').addEventListener('click', spinWheel);
 drawWheel();
