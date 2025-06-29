@@ -12,10 +12,11 @@
       flex-direction: column;
       align-items: center;
       padding-top: 40px;
+      position: relative;
     }
     h1 {
       font-size: 28px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     canvas {
       border: 10px solid orange;
@@ -39,7 +40,9 @@
       border-right: 20px solid transparent;
       border-bottom: 30px solid red;
       position: absolute;
-      top: 80px;
+      top: 90px;
+      left: calc(50% - 20px);
+      z-index: 10;
     }
   </style>
 </head>
@@ -55,9 +58,8 @@
     const ctx = canvas.getContext("2d");
     const size = canvas.width;
     const center = size / 2;
-    const segments = ["50元", "再抽一次", "10元", "折扣券", "20元", "買一送一"];
-    const colors = ["#f57c00", "#ffb74d"]; // 深橘 / 淺橘
-
+    const segments = ["50元", "買一送一", "20元", "折扣券", "再抽一次", "10元"];
+    const colors = ["#f57c00", "#ffb74d"];
     let angle = 0;
     let spinning = false;
 
@@ -67,12 +69,12 @@
         const start = angle + i * arc;
         const end = start + arc;
         ctx.beginPath();
-        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillStyle = colors[i % 2];
         ctx.moveTo(center, center);
         ctx.arc(center, center, center - 10, start, end);
         ctx.fill();
 
-        // Draw Text
+        // Draw text
         ctx.save();
         ctx.translate(center, center);
         ctx.rotate(start + arc / 2);
@@ -87,7 +89,8 @@
     function spin() {
       if (spinning) return;
       spinning = true;
-      let spinAngle = Math.random() * 2000 + 2000;
+
+      let spinAngle = Math.random() * 2000 + 3000;
       let duration = 3000;
       let start = performance.now();
 
@@ -102,6 +105,14 @@
         } else {
           angle %= 2 * Math.PI;
           spinning = false;
+
+          // ✅ 顯示中獎結果
+          const arc = (2 * Math.PI) / segments.length;
+          const index = Math.floor(((2 * Math.PI - angle + arc / 2) % (2 * Math.PI)) / arc);
+          const result = segments[index];
+          setTimeout(() => {
+            alert("🎉 恭喜中獎：" + result + "！");
+          }, 300);
         }
       }
 
