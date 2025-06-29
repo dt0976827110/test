@@ -1,18 +1,38 @@
 
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: "Microsoft JhengHei", sans-serif;
     text-align: center;
-    margin-top: 50px;
-    background-color: #f9f9f9;
+    background-color: #fdfcfb;
+    margin-top: 30px;
 }
-.container {
-    background: white;
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.wheel-container {
+    position: relative;
     display: inline-block;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-button {
+
+#wheel {
+    border: 5px solid #ccc;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+#spin {
+    padding: 10px 30px;
+    font-size: 18px;
+    background-color: #ff6a6a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#result {
     font-size: 20px;
-    padding: 10px 20px;
+    margin-top: 15px;
+    color: #444;
 }
