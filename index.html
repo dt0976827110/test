@@ -2,89 +2,104 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>幸運轉盤抽獎</title>
   <style>
     body {
-      background-color: #f8f8f8;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       font-family: sans-serif;
+      text-align: center;
+      background: #fdfdfd;
     }
-
     h1 {
-      margin-top: 30px;
+      font-size: 2em;
+      margin-top: 40px;
     }
-
-    canvas {
-      background: #fff;
-      border: 2px solid #ccc;
-      margin-top: 30px;
-      max-width: 90vw;
+    .wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 40px auto;
     }
-
-    button {
-      margin-top: 20px;
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 10px solid #FF8C00;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .segment {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      background: #FFA07A; /* 淺橘 */
+      clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+    }
+    .segment:nth-child(even) {
+      background: #FF8C00; /* 深橘 */
+    }
+    .segment span {
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      transform: rotate(45deg);
+      color: white;
+      font-weight: bold;
+    }
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 30px solid #FF4500;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .btn {
       padding: 10px 20px;
+      background: #FF8C00;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #ff7000;
     }
   </style>
 </head>
 <body>
-  <h1>🎯 幸運轉盤抽獎</h1>
-  <canvas id="wheel" width="300" height="300"></canvas>
-  <button onclick="spin()">開始抽獎</button>
+  <h1>🎮 幸運轉盤抽獎</h1>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel">
+      <div class="segment" style="transform: rotate(0deg)"><span>10元</span></div>
+      <div class="segment" style="transform: rotate(60deg)"><span>再抽一次</span></div>
+      <div class="segment" style="transform: rotate(120deg)"><span>折扣券</span></div>
+      <div class="segment" style="transform: rotate(180deg)"><span>20元</span></div>
+      <div class="segment" style="transform: rotate(240deg)"><span>再來一瓶</span></div>
+      <div class="segment" style="transform: rotate(300deg)"><span>50元</span></div>
+    </div>
+  </div>
+  <button class="btn" onclick="spin()">開始抽獎</button>
 
   <script>
-    const canvas = document.getElementById("wheel");
-    const ctx = canvas.getContext("2d");
-    const prizes = ["再接再厲", "10元", "30元", "再接再厲", "50元", "再接再厲"];
-    const anglePerSlice = 2 * Math.PI / prizes.length;
-
-    function drawWheel(rotation = 0) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < prizes.length; i++) {
-        ctx.beginPath();
-        ctx.moveTo(150, 150);
-        ctx.arc(150, 150, 150, rotation + i * anglePerSlice, rotation + (i + 1) * anglePerSlice);
-        ctx.fillStyle = i % 2 === 0 ? "#f88" : "#8cf";
-        ctx.fill();
-        ctx.save();
-        ctx.translate(150, 150);
-        ctx.rotate(rotation + i * anglePerSlice + anglePerSlice / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#000";
-        ctx.font = "14px sans-serif";
-        ctx.fillText(prizes[i], 140, 0);
-        ctx.restore();
-      }
-    }
-
-    let angle = 0;
-    let spinning = false;
-
+    let wheel = document.getElementById("wheel");
+    let deg = 0;
     function spin() {
-      if (spinning) return;
-      spinning = true;
-      let velocity = Math.random() * 0.1 + 0.3;
-      const decay = 0.99;
-
-      const anim = () => {
-        angle += velocity;
-        velocity *= decay;
-        drawWheel(angle);
-        if (velocity > 0.002) {
-          requestAnimationFrame(anim);
-        } else {
-          spinning = false;
-          const finalAngle = angle % (2 * Math.PI);
-          const index = Math.floor((prizes.length - (finalAngle / anglePerSlice)) % prizes.length);
-          alert("🎁 恭喜你獲得：" + prizes[index]);
-        }
-      };
-      anim();
+      const random = Math.floor(Math.random() * 6);
+      const extra = Math.floor(Math.random() * 30);
+      deg += (360 * 5) + (random * 60) + extra;
+      wheel.style.transform = `rotate(${deg}deg)`;
     }
-
-    drawWheel();
   </script>
 </body>
 </html>
