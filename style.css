@@ -25,7 +25,7 @@ h1 {
   position: absolute;
   top: -25px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(180deg);
   z-index: 10;
 }
 
