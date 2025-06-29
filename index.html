@@ -38,9 +38,9 @@
       height: 0;
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
+      border-top: 30px solid red; /* ✅ 改為指向下 */
       position: absolute;
-      top: 90px;
+      top: 120px;
       left: calc(50% - 20px);
       z-index: 10;
     }
@@ -74,7 +74,6 @@
         ctx.arc(center, center, center - 10, start, end);
         ctx.fill();
 
-        // Draw text
         ctx.save();
         ctx.translate(center, center);
         ctx.rotate(start + arc / 2);
@@ -84,6 +83,10 @@
         ctx.fillText(segments[i], center - 20, 10);
         ctx.restore();
       }
+    }
+
+    function easeOutCubic(x) {
+      return 1 - Math.pow(1 - x, 3);
     }
 
     function spin() {
@@ -96,17 +99,19 @@
 
       function animate(now) {
         let elapsed = now - start;
-        if (elapsed < duration) {
-          let progress = elapsed / duration;
-          angle += (spinAngle * (1 - Math.pow(progress, 2))) / 100;
-          ctx.clearRect(0, 0, size, size);
-          drawWheel();
+        let progress = Math.min(elapsed / duration, 1);
+        let eased = easeOutCubic(progress);
+        angle += (spinAngle * (1 - eased)) / 100;
+
+        ctx.clearRect(0, 0, size, size);
+        drawWheel();
+
+        if (progress < 1) {
           requestAnimationFrame(animate);
         } else {
           angle %= 2 * Math.PI;
           spinning = false;
 
-          // ✅ 顯示中獎結果
           const arc = (2 * Math.PI) / segments.length;
           const index = Math.floor(((2 * Math.PI - angle + arc / 2) % (2 * Math.PI)) / arc);
           const result = segments[index];
