@@ -1,105 +1,116 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>幸運轉盤抽獎</title>
   <style>
     body {
-      font-family: sans-serif;
-      text-align: center;
+      font-family: 'Noto Sans TC', sans-serif;
       background: #fdfdfd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 40px;
     }
     h1 {
-      font-size: 2em;
-      margin-top: 40px;
+      font-size: 28px;
+      margin-bottom: 20px;
     }
-    .wheel-container {
-      position: relative;
-      width: 300px;
-      height: 300px;
-      margin: 40px auto;
-    }
-    .wheel {
-      width: 100%;
-      height: 100%;
+    canvas {
+      border: 10px solid orange;
       border-radius: 50%;
-      border: 10px solid #FF8C00;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .segment {
-      position: absolute;
-      width: 50%;
-      height: 50%;
-      top: 50%;
-      left: 50%;
-      transform-origin: 0% 0%;
-      background: #FFA07A; /* 淺橘 */
-      clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+    #spinButton {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: orange;
+      border: 2px solid #000;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #fff;
     }
-    .segment:nth-child(even) {
-      background: #FF8C00; /* 深橘 */
-    }
-    .segment span {
-      position: absolute;
-      top: 20px;
-      left: 10px;
-      transform: rotate(45deg);
-      color: white;
-      font-weight: bold;
-    }
-    .pointer {
+    #arrow {
       width: 0;
       height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 30px solid #FF4500;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid red;
       position: absolute;
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .btn {
-      padding: 10px 20px;
-      background: #FF8C00;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .btn:hover {
-      background: #ff7000;
+      top: 80px;
     }
   </style>
 </head>
 <body>
-  <h1>🎮 幸運轉盤抽獎</h1>
-  <div class="wheel-container">
-    <div class="pointer"></div>
-    <div class="wheel" id="wheel">
-      <div class="segment" style="transform: rotate(0deg)"><span>10元</span></div>
-      <div class="segment" style="transform: rotate(60deg)"><span>再抽一次</span></div>
-      <div class="segment" style="transform: rotate(120deg)"><span>折扣券</span></div>
-      <div class="segment" style="transform: rotate(180deg)"><span>20元</span></div>
-      <div class="segment" style="transform: rotate(240deg)"><span>再來一瓶</span></div>
-      <div class="segment" style="transform: rotate(300deg)"><span>50元</span></div>
-    </div>
-  </div>
-  <button class="btn" onclick="spin()">開始抽獎</button>
+
+  <h1>🎯 幸運轉盤抽獎</h1>
+  <div id="arrow"></div>
+  <canvas id="wheel" width="300" height="300"></canvas>
+  <button id="spinButton">開始抽獎</button>
 
   <script>
-    let wheel = document.getElementById("wheel");
-    let deg = 0;
-    function spin() {
-      const random = Math.floor(Math.random() * 6);
-      const extra = Math.floor(Math.random() * 30);
-      deg += (360 * 5) + (random * 60) + extra;
-      wheel.style.transform = `rotate(${deg}deg)`;
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const size = canvas.width;
+    const center = size / 2;
+    const segments = ["50元", "再抽一次", "10元", "折扣券", "20元", "買一送一"];
+    const colors = ["#f57c00", "#ffb74d"]; // 深橘 / 淺橘
+
+    let angle = 0;
+    let spinning = false;
+
+    function drawWheel() {
+      const arc = (2 * Math.PI) / segments.length;
+      for (let i = 0; i < segments.length; i++) {
+        const start = angle + i * arc;
+        const end = start + arc;
+        ctx.beginPath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, center - 10, start, end);
+        ctx.fill();
+
+        // Draw Text
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(start + arc / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 16px sans-serif";
+        ctx.fillText(segments[i], center - 20, 10);
+        ctx.restore();
+      }
     }
+
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+      let spinAngle = Math.random() * 2000 + 2000;
+      let duration = 3000;
+      let start = performance.now();
+
+      function animate(now) {
+        let elapsed = now - start;
+        if (elapsed < duration) {
+          let progress = elapsed / duration;
+          angle += (spinAngle * (1 - Math.pow(progress, 2))) / 100;
+          ctx.clearRect(0, 0, size, size);
+          drawWheel();
+          requestAnimationFrame(animate);
+        } else {
+          angle %= 2 * Math.PI;
+          spinning = false;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    drawWheel();
+    document.getElementById("spinButton").addEventListener("click", spin);
   </script>
+
 </body>
 </html>
