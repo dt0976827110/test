@@ -18,15 +18,17 @@ h1 {
 
 #arrow {
   width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-top: 30px solid red; /* ✅ 改為指向下 */
-      position: absolute;
-      top: 120px;
-      left: calc(50% - 20px);
-      z-index: 10;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 30px solid red; /* ✅ 向下的箭頭 */
+  position: absolute;
+  top: -30px; /* 放在轉盤正上方，往上偏移 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
 }
+
 
 #spin {
   margin-top: 30px;
