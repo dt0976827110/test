@@ -1,132 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>幸運轉盤抽獎</title>
-  <style>
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
-      background: #fdfdfd;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 40px;
-      position: relative;
-    }
-    h1 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-    canvas {
-      border: 10px solid orange;
-      border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    #spinButton {
-      margin-top: 30px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: orange;
-      border: 2px solid #000;
-      border-radius: 6px;
-      cursor: pointer;
-      color: #fff;
-    }
-    #arrow {
-      width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-top: 30px solid red; /* ✅ 改為指向下 */
-      position: absolute;
-      top: 120px;
-      left: calc(50% - 20px);
-      z-index: 10;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <h1>🎯 幸運轉盤抽獎</h1>
-  <div id="arrow"></div>
-  <canvas id="wheel" width="300" height="300"></canvas>
-  <button id="spinButton">開始抽獎</button>
-
-  <script>
-    const canvas = document.getElementById("wheel");
-    const ctx = canvas.getContext("2d");
-    const size = canvas.width;
-    const center = size / 2;
-    const segments = ["50元", "買一送一", "20元", "折扣券", "再抽一次", "10元"];
-    const colors = ["#f57c00", "#ffb74d"];
-    let angle = 0;
-    let spinning = false;
-
-    function drawWheel() {
-      const arc = (2 * Math.PI) / segments.length;
-      for (let i = 0; i < segments.length; i++) {
-        const start = angle + i * arc;
-        const end = start + arc;
-        ctx.beginPath();
-        ctx.fillStyle = colors[i % 2];
-        ctx.moveTo(center, center);
-        ctx.arc(center, center, center - 10, start, end);
-        ctx.fill();
-
-        ctx.save();
-        ctx.translate(center, center);
-        ctx.rotate(start + arc / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 16px sans-serif";
-        ctx.fillText(segments[i], center - 20, 10);
-        ctx.restore();
-      }
-    }
-
-    function easeOutCubic(x) {
-      return 1 - Math.pow(1 - x, 3);
-    }
-
-    function spin() {
-      if (spinning) return;
-      spinning = true;
-
-      let spinAngle = Math.random() * 2000 + 3000;
-      let duration = 3000;
-      let start = performance.now();
-
-      function animate(now) {
-        let elapsed = now - start;
-        let progress = Math.min(elapsed / duration, 1);
-        let eased = easeOutCubic(progress);
-        angle += (spinAngle * (1 - eased)) / 100;
-
-        ctx.clearRect(0, 0, size, size);
-        drawWheel();
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          angle %= 2 * Math.PI;
-          spinning = false;
-
-          const arc = (2 * Math.PI) / segments.length;
-          const index = Math.floor(((2 * Math.PI - angle + arc / 2) % (2 * Math.PI)) / arc);
-          const result = segments[index];
-          setTimeout(() => {
-            alert("🎉 恭喜中獎：" + result + "！");
-          }, 300);
-        }
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    drawWheel();
-    document.getElementById("spinButton").addEventListener("click", spin);
-  </script>
-
+  <div class="container">
+    <h1>🎯 幸運轉盤抽獎</h1>
+    <canvas id="wheel" width="400" height="400"></canvas>
+    <div id="arrow"></div>
+    <button id="spin">開始抽獎</button>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
