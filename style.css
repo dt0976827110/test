@@ -21,9 +21,9 @@ h1 {
   height: 0;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
-  border-top: 30px solid red; /* ✅ 向下的箭頭 */
+  border-bottom: 30px solid red;  /* ✅ 改為 border-bottom，表示箭頭朝下 */
   position: absolute;
-  top: -30px; /* 放在轉盤正上方，往上偏移 */
+  top: -30px; /* 放在 canvas 正上方 */
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
