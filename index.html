@@ -110,7 +110,7 @@
 
       const spins = Math.floor(Math.random() * 3) + 5; // 5~7圈
       const finalIndex = Math.floor(Math.random() * total);
-      const finalAngle = (3 * Math.PI / 2) - (finalIndex * arc); // 12點鐘方向
+      const finalAngle = (Math.PI / 2) - (finalIndex * arc); // 12點鐘方向
       const totalRotation = 2 * Math.PI * spins + finalAngle;
 
       let current = 0;
