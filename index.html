@@ -164,7 +164,7 @@
 
       requestAnimationFrame(animate);
     });
-function sendResultToLine(resultText) {
+    function sendResultToLine(resultText) {
       const message = encodeURIComponent(`🎯 我剛剛轉盤抽到：「${resultText}」！`);
       const lineURL = `https://line.me/R/oaMessage/@137sbacu/?${message}`;
       document.getElementById("lineShareBtn").href = lineURL;
