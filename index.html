@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>幸運轉盤抽獎01</title>
+  <title>轉盤抽獎</title>
   <style>
     body {
       text-align: center;
@@ -60,7 +60,7 @@
   </style>
 </head>
 <body>
-  <h1>🎯 幸運轉盤抽獎</h1>
+  <h1>儲值轉盤抽獎</h1>
   
   <div id="wheel-container">
     <div id="arrow"></div>
@@ -73,7 +73,7 @@
   <script>
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
-    const prizes = ["折扣券", "20元", "再抽一次", "50元", "買一送一", "10元"];
+    const prizes = ["10%", "5%", "1%", "5%", "10%", "15%"];
     const colors = ["#FFA726", "#FFCC80"]; // 橘色與淺橘交錯
     const total = prizes.length;
     const arc = (2 * Math.PI) / total;
