@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>轉盤抽獎</title>
+  <title>轉盤抽獎01</title>
   <style>
     body {
       text-align: center;
@@ -57,6 +57,29 @@
       font-size: 20px;
       font-weight: bold;
     }
+    #lineShareBtn {
+      display: none;
+      margin-top: 16px;
+      padding: 10px 24px;
+      background-color: #06C755;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    #copyBtn {
+      margin-top: 8px;
+      padding: 8px 20px;
+      background-color: #888;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+     }
   </style>
 </head>
 <body>
@@ -69,7 +92,11 @@
 
   <button id="spinButton">開始抽獎</button>
   <div id="result"></div>
-
+  
+  <a id="lineShareBtn" target="_blank">👉 點我回傳抽中的結果給官方帳號</a>
+  <br/>
+  <button id="copyBtn" onclick="copyResult()">📋 複製結果自行貼給我們</button>
+  
   <script>
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
@@ -137,6 +164,19 @@
 
       requestAnimationFrame(animate);
     });
+function sendResultToLine(resultText) {
+      const message = encodeURIComponent(`🎯 我剛剛轉盤抽到：「${resultText}」！`);
+      const lineURL = `https://line.me/R/oaMessage/@137sbacu/?${message}`;
+      document.getElementById("lineShareBtn").href = lineURL;
+      document.getElementById("lineShareBtn").style.display = "inline-block";
+    }
+
+    function copyResult() {
+      const text = document.getElementById("result").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("✅ 已複製結果，請貼給我們的 LINE！");
+      });
+    }
   </script>
 </body>
 </html>
