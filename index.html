@@ -93,14 +93,12 @@
   <button id="spinButton">開始抽獎</button>
   <div id="result"></div>
   
-  <a id="lineShareBtn" target="_blank">👉 點我回傳抽中的結果給官方帳號</a>
-  <br/>
-  <button id="copyBtn" onclick="copyResult()">📋 複製結果自行貼給我們</button>
+  
   
   <script>
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
-    const prizes = ["10%", "5%", "1%", "5%", "10%", "15%"];
+    const prizes = ["10%", "5%", "1%", "5%", "10%"];
     const colors = ["#FFA726", "#FFCC80"]; // 橘色與淺橘交錯
     const total = prizes.length;
     const arc = (2 * Math.PI) / total;
@@ -164,19 +162,7 @@
 
       requestAnimationFrame(animate);
     });
-    function sendResultToLine(resultText) {
-      const message = encodeURIComponent(`🎯 我剛剛轉盤抽到：「${resultText}」！`);
-      const lineURL = `https://line.me/R/oaMessage/@137sbacu/?${message}`;
-      document.getElementById("lineShareBtn").href = lineURL;
-      document.getElementById("lineShareBtn").style.display = "inline-block";
-    }
-
-    function copyResult() {
-      const text = document.getElementById("result").innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("✅ 已複製結果，請貼給我們的 LINE！");
-      });
-    }
+    
   </script>
 </body>
 </html>
