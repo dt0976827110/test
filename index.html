@@ -91,7 +91,7 @@
   <div id="result"></div>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js')
+      navigator.serviceWorker.register('/test/sw.js')
         .then(() => console.log("✅ Service Worker 已註冊"))
         .catch(err => console.error("❌ SW 註冊失敗", err));
     }
