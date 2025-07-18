@@ -1,7 +1,7 @@
 {
   "name": "愛愛轉盤",
   "short_name": "轉盤",
-  "start_url": "./",
+  "start_url": "/test/",
   "display": "standalone",
   "background_color": "#fffaf2",
   "theme_color": "#ffa726",
