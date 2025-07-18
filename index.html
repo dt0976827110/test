@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>愛愛轉盤</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="愛愛轉盤" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <style>
     body {
       text-align: center;
@@ -14,33 +19,29 @@
       font-size: 28px;
       margin-bottom: 10px;
     }
-
     #wheel-container {
       position: relative;
       width: 400px;
       height: 400px;
       margin: 0 auto;
     }
-
     #arrow {
       width: 0;
       height: 0;
       border-left: 20px solid transparent;
       border-right: 20px solid transparent;
-      border-top: 30px solid red; /* ✅ 朝下 */
+      border-top: 30px solid red;
       position: absolute;
-      top: 0px; /* ✅ 貼在轉盤上方 */
+      top: 0px;
       left: 52%;
       transform: translateX(-40%);
       z-index: 10;
     }
-
     #wheel {
       border: 10px solid orange;
       border-radius: 50%;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     #spinButton {
       margin-top: 40px;
       padding: 12px 28px;
@@ -51,7 +52,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     #result {
       margin-top: 20px;
       font-size: 20px;
@@ -69,7 +69,6 @@
       cursor: pointer;
       text-decoration: none;
     }
-
     #copyBtn {
       margin-top: 8px;
       padding: 8px 20px;
@@ -79,33 +78,33 @@
       border-radius: 6px;
       font-size: 14px;
       cursor: pointer;
-     }
+    }
   </style>
 </head>
 <body>
   <h1>愛愛轉盤</h1>
-  
   <div id="wheel-container">
     <div id="arrow"></div>
     <canvas id="wheel" width="400" height="400"></canvas>
   </div>
-
   <button id="spinButton">開始抽獎</button>
   <div id="result"></div>
-  
-  
-  
   <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log("✅ Service Worker 已註冊"))
+        .catch(err => console.error("❌ SW 註冊失敗", err));
+    }
+
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
     const prizes = ["吃馬卡龍", "愛愛", "脫內褲", "拍色色照", "塞肛塞", "塞蛋蛋", "高潮", "坐車自摸"];
-    const colors = ["#FFA726", "#FFCC80"]; // 橘色與淺橘交錯
+    const colors = ["#FFA726", "#FFCC80"];
     const total = prizes.length;
     const arc = (2 * Math.PI) / total;
     let angle = 0;
     let spinning = false;
 
-    // 畫轉盤
     function drawWheel() {
       for (let i = 0; i < total; i++) {
         const start = angle + i * arc;
@@ -128,24 +127,22 @@
 
     drawWheel();
 
-    // 抽獎
     document.getElementById("spinButton").addEventListener("click", function () {
       if (spinning) return;
       spinning = true;
-      const offset = Math.random() * 0.6 + 0.2; // 0.2 ~ 0.8
-      const spins = Math.floor(Math.random() * 9)+1 ; // 5~7圈
+      const offset = Math.random() * 0.6 + 0.2;
+      const spins = Math.floor(Math.random() * 9) + 1;
       const finalIndex = Math.floor(Math.random() * total);
-      const finalAngle = (3 * Math.PI / 2) - ((finalIndex+offset) * arc); // 12點鐘方向
+      const finalAngle = (3 * Math.PI / 2) - ((finalIndex + offset) * arc);
       const totalRotation = 2 * Math.PI * spins + finalAngle;
 
-      let current = 0;
       const duration = 4000;
       const start = performance.now();
 
       function animate(now) {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
-        const easeOut = 1 - Math.pow(1 - progress, 4); // 先快後慢
+        const easeOut = 1 - Math.pow(1 - progress, 4);
 
         angle = totalRotation * easeOut;
         ctx.clearRect(0, 0, 400, 400);
@@ -162,7 +159,6 @@
 
       requestAnimationFrame(animate);
     });
-    
   </script>
 </body>
 </html>
